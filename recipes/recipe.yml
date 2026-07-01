@@ -30,6 +30,7 @@ modules:
         # Runtime tooling expected in this image profile.
         - distrobox
         - uupd
+        - sddm
         # Extras
         - network-manager-applet
         - volumeicon
@@ -90,6 +91,7 @@ modules:
       enabled:
         # uupd handles bootc, brew, flatpak, and distrobox updates.
         - uupd.timer
+        - sddm.service
       disabled:
         # Disable rpm-ostree auto path to avoid overlapping update mechanisms.
         - rpm-ostreed-automatic.timer
