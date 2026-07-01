@@ -21,6 +21,7 @@ modules:
       copr:
         - atim/starship
     group-install:
+      with-optional: true
       packages:
         - cinnamon-desktop
         - printing
@@ -52,12 +53,6 @@ modules:
         - gnome-calculator
         - file-roller
         - thunderbird
-
-# Copy system configuration files from files/system into image root.
-  - type: files
-    files:
-      - source: system
-        destination: /
 
 # Add this to pull the Brew OCI container
   - type: containerfile
