@@ -20,33 +20,49 @@ modules:
     repos:
       copr:
         - atim/starship
+    group-install:
+      packages:
+        - cinnamon-desktop
+        - printing
     install:
       packages:
-        # --- Cinnamon Desktop Environment Stack ---
-        - '@cinnamon-desktop'
-        - '@printing'
+        # --- Cinnamon display manager environment stack ---
         - lightdm
-        - lightdm-settings
+        - lightdm-gtk
         - slick-greeter
+        # --- Essential Mint themes and icons for a polished Cinnamon experience ---
+        - mint-themes
+        - mint-y-icons
+        - mint-x-icons
+        - desktop-backgrounds-compat
+        # --- Extras ---
         - network-manager-applet
         - volumeicon
         - gnome-terminal
         - blueman
         - system-config-printer
-        # --- Extras ---
         - distrobox
         - fish
         - starship
         - vim
         - fastfetch
+        - git
+    remove:
+      packages:
+        - gnome-calculator
+        - file-roller
+        - thunderbird
 
 # This configures LightDM and forces the system to boot into a graphical interface
   - type: systemd
     system:
       enabled:
-        - lightdm
+        - lightdm.service
+        # uupd handles bootc, brew, flatpak, and distrobox updates.
+        - uupd.timer
       disabled:
-        - gdm
+        # Disable rpm-ostree auto path to avoid overlapping update mechanisms.
+        - rpm-ostreed-automatic.timer
         
   - type: default-flatpaks
     configurations:
