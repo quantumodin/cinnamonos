@@ -18,13 +18,10 @@ modules:
     group-install:
       with-optional: true
       packages:
-        - "Cinnamon Desktop"
+        - cinnamon-desktop
+        - printing
     install:
       packages:
-        # Cinnamon display manager and greeter stack.
-        - lightdm
-        - lightdm-gtk
-        - slick-greeter
         # Essential Mint themes and icons for a polished Cinnamon experience.
         - mint-themes
         - mint-y-icons
@@ -91,7 +88,6 @@ modules:
   - type: systemd
     system:
       enabled:
-        - lightdm.service
         # uupd handles bootc, brew, flatpak, and distrobox updates.
         - uupd.timer
       disabled:
