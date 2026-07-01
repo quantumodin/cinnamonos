@@ -23,8 +23,8 @@ modules:
     install:
       packages:
         # --- Cinnamon Desktop Environment Stack ---
-        - @cinnamon-desktop
-        - @printing
+        - '@cinnamon-desktop'
+        - '@printing'
         - lightdm
         - lightdm-settings
         - slick-greeter
@@ -33,7 +33,6 @@ modules:
         - gnome-terminal
         - blueman
         - system-config-printer
-
         # --- Extras ---
         - distrobox
         - fish
@@ -41,7 +40,7 @@ modules:
 
   # This instructs the system to launch the graphical login screen on boot
   - type: systemd
-    services:
+    system:
       enabled:
         - lightdm
 
