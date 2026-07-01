@@ -41,11 +41,13 @@ modules:
         - fastfetch
 
 # This configures LightDM and forces the system to boot into a graphical interface
-  - type: script
-    snippets:
-      - systemctl enable lightdm.service
-      - systemctl set-default graphical.target
-
+  - type: systemd
+    system:
+      enabled:
+        - lightdm
+      disabled:
+        - gdm
+        
   - type: default-flatpaks
     configurations:
       - notify: true # Send notification after install/uninstall is finished (true/false)
