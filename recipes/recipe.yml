@@ -69,8 +69,6 @@ modules:
     system:
       enabled:
         - lightdm.service
-        # uupd handles bootc, brew, flatpak, and distrobox updates.
-        - uupd.timer
       disabled:
         # Disable rpm-ostree auto path to avoid overlapping update mechanisms.
         - rpm-ostreed-automatic.timer
