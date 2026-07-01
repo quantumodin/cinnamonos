@@ -53,6 +53,17 @@ modules:
         - file-roller
         - thunderbird
 
+# Copy system configuration files from files/system into image root.
+  - type: files
+    files:
+      - source: system
+        destination: /
+
+# Add this to pull the Brew OCI container
+  - type: containerfile
+    snippets:
+      - COPY --from=ghcr.io/ublue-os/brew:latest /system_files /
+
 # This configures LightDM and forces the system to boot into a graphical interface
   - type: systemd
     system:
