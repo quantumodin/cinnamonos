@@ -1,24 +1,19 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-# image will be published to ghcr.io/<user>/<name>
+# Final published image name: ghcr.io/<namespace>/cinnamon:<image-version>
 name: cinnamonos
-# description will be included in the image's metadata
-description: This is my personal OS image.
 
-# the base image to build on top of (FROM) and the version tag to use
+description: >-
+  Universal Blue based Cinnamon image built with BlueBuild.
+
 base-image: ghcr.io/ublue-os/base-main
-image-version: latest # latest is also supported if you want new updates ASAP
+image-version: latest
 
-# module configuration, executed in order
-# you can include multiple instances of the same module
 modules:
-  - type: files
-    files:
-      - source: system
-        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
-
+  # Core OS package layering and removals.
   - type: dnf
     repos:
       copr:
+        - ublue-os/packages
         - atim/starship
     group-install:
       with-optional: true
@@ -27,53 +22,59 @@ modules:
         - printing
     install:
       packages:
-        # --- Cinnamon display manager environment stack ---
+        # Cinnamon display manager and greeter stack.
         - lightdm
         - lightdm-gtk
         - slick-greeter
-        # --- Essential Mint themes and icons for a polished Cinnamon experience ---
+        # Essential Mint themes and icons for a polished Cinnamon experience.
         - mint-themes
         - mint-y-icons
         - mint-x-icons
         - desktop-backgrounds-compat
-        # --- Extras ---
+        # Runtime tooling expected in this image profile.
+        - distrobox
+        - uupd
+        # Extras
         - network-manager-applet
         - volumeicon
         - gnome-terminal
         - blueman
         - system-config-printer
-        - distrobox
         - fish
         - starship
         - vim
         - fastfetch
         - git
+
     remove:
       packages:
+        # Replaced by curated Flatpak defaults below.
         - gnome-calculator
         - file-roller
+        - simple-scan
         - thunderbird
 
-# Add this to pull the Brew OCI container
+  # Copy system configuration files from files/system into image root.
+  - type: files
+    files:
+      - source: system
+        destination: /
+
+  # Add this to pull the Brew OCI container
   - type: containerfile
     snippets:
       - COPY --from=ghcr.io/ublue-os/brew:latest /system_files /
 
-# This configures LightDM and forces the system to boot into a graphical interface
-  - type: systemd
-    system:
-      enabled:
-        - lightdm.service
-      disabled:
-        # Disable rpm-ostree auto path to avoid overlapping update mechanisms.
-        - rpm-ostreed-automatic.timer
-        
+  # Seed default system-wide Flatpaks from Flathub at first boot.
   - type: default-flatpaks
     configurations:
-      - notify: true # Send notification after install/uninstall is finished (true/false)
+      - notify: false
         scope: system
-        # If no repo information is specified, Flathub will be used by default
-        install: # system flatpaks we want all users to have and not remove
+        repo:
+          name: flathub
+          title: Flathub (System)
+          url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        install:
           - com.brave.Browser
           - com.github.ryonakano.pinit
           - com.github.tchx84.Flatseal
@@ -81,6 +82,17 @@ modules:
           - io.github.kolunmi.Bazaar
           - org.gnome.Shotwell
           - io.github.celluloid_player.Celluloid
-      - scope: user # Also add Flathub user repo, but no user packages
 
-  - type: signing # this sets up the proper policy & signing files for signed images to work fully
+  # Enable/disable system services expected for this image.
+  - type: systemd
+    system:
+      enabled:
+        - lightdm.service
+        # uupd handles bootc, brew, flatpak, and distrobox updates.
+        - uupd.timer
+      disabled:
+        # Disable rpm-ostree auto path to avoid overlapping update mechanisms.
+        - rpm-ostreed-automatic.timer
+
+  # Sign published OCI image using repo cosign configuration.
+  - type: signing
