@@ -18,7 +18,7 @@ modules:
     group-install:
       with-optional: true
       packages:
-        - cinnamon-desktop
+        - "Cinnamon Desktop"
         - printing
     install:
       packages:
@@ -59,6 +59,11 @@ modules:
     files:
       - source: system
         destination: /
+
+  # Set systemd default target to boot into a graphical GUI environment
+  - type: containerfile
+    snippets:
+      - RUN ln -sf /usr/lib/systemd/system/graphical.target /etc/systemd/system/default.target # <-- ADDED: Forces GUI boot
 
   # Add this to pull the Brew OCI container
   - type: containerfile
