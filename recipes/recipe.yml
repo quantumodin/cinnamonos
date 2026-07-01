@@ -37,12 +37,14 @@ modules:
         - distrobox
         - fish
         - starship
+        - vim
+        - fastfetch
 
-  # This instructs the system to launch the graphical login screen on boot
-  - type: systemd
-    system:
-      enabled:
-        - lightdm
+# This configures LightDM and forces the system to boot into a graphical interface
+  - type: script
+    snippets:
+      - systemctl enable lightdm.service
+      - systemctl set-default graphical.target
 
   - type: default-flatpaks
     configurations:
