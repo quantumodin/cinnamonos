@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 # image will be published to ghcr.io/<user>/<name>
 name: cinnamonos
@@ -40,6 +39,7 @@ modules:
         - fish
         - starship
 
+  # This instructs the system to launch the graphical login screen on boot
   - type: systemd
     services:
       enabled:
