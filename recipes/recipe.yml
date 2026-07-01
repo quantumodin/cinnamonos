@@ -19,7 +19,6 @@ modules:
       with-optional: true
       packages:
         - "Cinnamon Desktop"
-        - printing
     install:
       packages:
         # Cinnamon display manager and greeter stack.
